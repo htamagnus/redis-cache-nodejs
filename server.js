@@ -18,13 +18,18 @@ const getAllProducts = async () => {
     });
 };
 
+app.get('/saved', async (req, res) => {
+    await client.del("getAllProducts");
+    res.send('Cache deletado');
+})
+
 app.get('/', async (req, res) => {
     const productsFromCache = await client.get("getAllProducts");
     if (productsFromCache) {
         return res.send(JSON.parse(productsFromCache));
     }
     const products = await getAllProducts();
-    await client.set("getAllProducts", JSON.stringify(products), { EX: 10 });
+    // await client.set("getAllProducts", JSON.stringify(products), { EX: 10 });
     res.send(products);
 })
 
